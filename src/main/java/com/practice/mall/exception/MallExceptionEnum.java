@@ -16,6 +16,7 @@ public enum MallExceptionEnum {
     PARA_NOT_NULL(10010, "參數不能為空"),
     CREATE_FAILED(10011, "新增失敗"),
     REQUEST_PARAM_ERROR(10012, "參數錯誤"),
+    DELETE_FAILED(10013, "刪除失敗"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

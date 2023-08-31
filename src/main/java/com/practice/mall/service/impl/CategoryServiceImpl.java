@@ -28,4 +28,33 @@ public class CategoryServiceImpl implements CategoryService {
             throw new MallException(MallExceptionEnum.CREATE_FAILED);
         }
     }
+
+    @Override
+    public void update(Category updateCategory) {
+        if (updateCategory.getName() != null) {
+            Category categoryOld = categoryMapper.selectByName(updateCategory.getName());
+            if (categoryOld != null && !categoryOld.getId().equals(updateCategory.getId())){
+                throw new MallException(MallExceptionEnum.NAME_EXISTED);
+            }
+        }
+
+        int count = categoryMapper.updateByPrimaryKeySelective(updateCategory);
+        if (count == 0) {
+            throw new MallException(MallExceptionEnum.UPDATE_FAILED);
+        }
+    }
+
+    @Override
+    public void delete(Integer id) {
+        Category categoryOld = categoryMapper.selectByPrimaryKey(id);
+
+        if (categoryOld == null) {
+            throw new MallException(MallExceptionEnum.DELETE_FAILED);
+        }
+
+        int count = categoryMapper.deleteByPrimaryKey(id);
+        if (count == 0) {
+            throw new MallException(MallExceptionEnum.DELETE_FAILED);
+        }
+    }
 }

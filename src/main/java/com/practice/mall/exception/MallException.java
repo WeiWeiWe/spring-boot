@@ -3,7 +3,7 @@ package com.practice.mall.exception;
 /**
  * 統一異常
  */
-public class MallException extends Exception {
+public class MallException extends RuntimeException {
     private final Integer code;
     private final String message;
 

@@ -1,5 +1,6 @@
 package com.practice.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallExceptionEnum;
@@ -7,6 +8,7 @@ import com.practice.mall.model.pojo.Category;
 import com.practice.mall.model.pojo.User;
 import com.practice.mall.model.request.AddCategoryReq;
 import com.practice.mall.model.request.UpdateCategoryReq;
+import com.practice.mall.model.vo.CategoryVO;
 import com.practice.mall.service.CategoryService;
 import com.practice.mall.service.UserService;
 import io.swagger.annotations.ApiOperation;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 public class CategoryController {
@@ -76,5 +79,21 @@ public class CategoryController {
     public ApiRestResponse deleteCategory(@RequestParam Integer id) {
         categoryService.delete(id);
         return ApiRestResponse.success();
+    }
+
+    @ApiOperation("後台商品分類目錄列表")
+    @PostMapping("admin/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForAdmin(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        PageInfo pageInfo = categoryService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
+    }
+
+    @ApiOperation("前台商品分類目錄列表")
+    @PostMapping("/category/list")
+    @ResponseBody
+    public ApiRestResponse listCategoryForCustomer() {
+        List<CategoryVO> categoryVOS = categoryService.listCategoryForCustomer();
+        return ApiRestResponse.success(categoryVOS);
     }
 }

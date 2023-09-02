@@ -4,8 +4,12 @@ import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallException;
 import com.practice.mall.exception.MallExceptionEnum;
+import com.practice.mall.model.pojo.Product;
 import com.practice.mall.model.request.AddProductReq;
+import com.practice.mall.model.request.UpdateProductReq;
 import com.practice.mall.service.ProductService;
+import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,13 +30,13 @@ public class ProductAdminController {
     @Autowired
     ProductService productService;
 
-    @PostMapping("admin/product/add")
+    @PostMapping("/admin/product/add")
     public ApiRestResponse addProduct(@Valid @RequestBody AddProductReq addProductReq) {
         productService.add(addProductReq);
         return ApiRestResponse.success();
     }
 
-    @PostMapping("admin/upload/file")
+    @PostMapping("/admin/upload/file")
     public ApiRestResponse upload(HttpServletRequest httpServletRequest, @RequestParam("file") MultipartFile file) {
         String fileName = file.getOriginalFilename();
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
@@ -70,5 +74,21 @@ public class ProductAdminController {
             effectiveURI = null;
         }
         return effectiveURI;
+    }
+
+    @ApiOperation("後台更新商品")
+    @PostMapping("/admin/product/update")
+    public ApiRestResponse updateProduct(@Valid @RequestBody UpdateProductReq updateProductReq) {
+        Product product = new Product();
+        BeanUtils.copyProperties(updateProductReq, product);
+        productService.update(product);
+        return ApiRestResponse.success();
+    }
+
+    @ApiOperation("後台刪除商品")
+    @PostMapping("/admin/product/delete")
+    public ApiRestResponse deleteProduct(@RequestParam Integer id) {
+        productService.delete(id);
+        return ApiRestResponse.success();
     }
 }

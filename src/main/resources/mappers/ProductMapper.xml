@@ -154,4 +154,12 @@
     from practice_mall_product
     where name = #{name,jdbcType=VARCHAR}
   </select>
+  <update id="batchUpdateSellStatus">
+    update practice_mall_product
+    set status=#{sellStatus}
+    where id in
+    <foreach collection="ids" close=")" item="id" open="(" separator=",">
+      #{id}
+    </foreach>
+  </update>
 </mapper>

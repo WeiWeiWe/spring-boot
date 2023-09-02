@@ -17,6 +17,8 @@ public enum MallExceptionEnum {
     CREATE_FAILED(10011, "新增失敗"),
     REQUEST_PARAM_ERROR(10012, "參數錯誤"),
     DELETE_FAILED(10013, "刪除失敗"),
+    MKDIR_FAILED(10014, "文件夾創建失敗"),
+    UPLOAD_FAILED(10015, "圖片上傳失敗"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

@@ -162,4 +162,9 @@
       #{id}
     </foreach>
   </update>
+  <select id="selectListForAdmin" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from practice_mall_product
+    order by update_time desc
+  </select>
 </mapper>

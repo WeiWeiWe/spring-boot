@@ -1,5 +1,6 @@
 package com.practice.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallException;
@@ -97,5 +98,12 @@ public class ProductAdminController {
     public ApiRestResponse batchUpdateSellStatus(@RequestParam Integer[] ids, @RequestParam Integer sellStatus) {
         productService.batchUpdateSellStatus(ids, sellStatus);
         return ApiRestResponse.success();
+    }
+
+    @ApiOperation("後台商品列表接口")
+    @PostMapping("/admin/product/list")
+    public ApiRestResponse list(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        PageInfo pageInfo = productService.listForAdmin(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 }

@@ -76,4 +76,10 @@ public class ProductServiceImpl implements ProductService {
         PageInfo pageInfo = new PageInfo(products);
         return pageInfo;
     }
+
+    @Override
+    public Product detail(Integer id) {
+        Product product = productMapper.selectByPrimaryKey(id);
+        return product;
+    }
 }

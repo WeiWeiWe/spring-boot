@@ -19,6 +19,8 @@ public enum MallExceptionEnum {
     DELETE_FAILED(10013, "刪除失敗"),
     MKDIR_FAILED(10014, "文件夾創建失敗"),
     UPLOAD_FAILED(10015, "圖片上傳失敗"),
+    NOT_SALE(10016, "不可售出，商品已下架或不存在此商品"),
+    NOT_ENOUGH(10017, "商品庫存不足"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

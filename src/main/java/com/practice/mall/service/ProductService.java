@@ -3,6 +3,7 @@ package com.practice.mall.service;
 import com.github.pagehelper.PageInfo;
 import com.practice.mall.model.pojo.Product;
 import com.practice.mall.model.request.AddProductReq;
+import com.practice.mall.model.request.ProductListReq;
 
 public interface ProductService {
 
@@ -17,4 +18,6 @@ public interface ProductService {
     PageInfo listForAdmin(Integer pageNum, Integer pageSize);
 
     Product detail(Integer id);
+
+    PageInfo list(ProductListReq productListReq);
 }

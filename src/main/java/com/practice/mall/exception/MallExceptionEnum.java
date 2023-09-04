@@ -25,6 +25,7 @@ public enum MallExceptionEnum {
     NO_ENUM(10019, "未找到對應的枚舉"),
     NO_ORDER(10020, "訂單不存在"),
     NOT_YOUR_ORDER(10021, "不是此用戶的訂單"),
+    WRONG_ORDER_STATUS(10022, "訂單狀態不符"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

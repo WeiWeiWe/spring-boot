@@ -21,6 +21,8 @@ public enum MallExceptionEnum {
     UPLOAD_FAILED(10015, "圖片上傳失敗"),
     NOT_SALE(10016, "不可售出，商品已下架或不存在此商品"),
     NOT_ENOUGH(10017, "商品庫存不足"),
+    CART_EMPTY(10018, "購物車已勾選的商品為空"),
+    NO_ENUM(10019, "未找到對應的枚舉"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

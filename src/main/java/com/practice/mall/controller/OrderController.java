@@ -2,12 +2,11 @@ package com.practice.mall.controller;
 
 import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.model.request.CreateOrderReq;
+import com.practice.mall.model.vo.OrderVO;
 import com.practice.mall.service.OrderService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class OrderController {
@@ -20,5 +19,12 @@ public class OrderController {
     public ApiRestResponse create(@RequestBody CreateOrderReq createOrderReq) {
         String orderNo = orderService.create(createOrderReq);
         return ApiRestResponse.success(orderNo);
+    }
+
+    @ApiOperation("前台訂單詳情")
+    @GetMapping("order/detail")
+    public ApiRestResponse detail(@RequestParam String orderNo) {
+        OrderVO orderVO = orderService.detail(orderNo);
+        return ApiRestResponse.success(orderVO);
     }
 }

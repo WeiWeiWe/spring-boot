@@ -23,6 +23,8 @@ public enum MallExceptionEnum {
     NOT_ENOUGH(10017, "商品庫存不足"),
     CART_EMPTY(10018, "購物車已勾選的商品為空"),
     NO_ENUM(10019, "未找到對應的枚舉"),
+    NO_ORDER(10020, "訂單不存在"),
+    NOT_YOUR_ORDER(10021, "不是此用戶的訂單"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

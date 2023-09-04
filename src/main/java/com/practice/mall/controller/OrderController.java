@@ -1,5 +1,6 @@
 package com.practice.mall.controller;
 
+import com.github.pagehelper.PageInfo;
 import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.model.request.CreateOrderReq;
 import com.practice.mall.model.vo.OrderVO;
@@ -26,5 +27,12 @@ public class OrderController {
     public ApiRestResponse detail(@RequestParam String orderNo) {
         OrderVO orderVO = orderService.detail(orderNo);
         return ApiRestResponse.success(orderVO);
+    }
+
+    @ApiOperation("前台訂單列表")
+    @GetMapping("order/list")
+    public ApiRestResponse list(@RequestParam Integer pageNum, @RequestParam Integer pageSize) {
+        PageInfo pageInfo = orderService.listForCustomer(pageNum, pageSize);
+        return ApiRestResponse.success(pageInfo);
     }
 }

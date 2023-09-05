@@ -2,6 +2,7 @@ package com.practice.mall.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.zxing.WriterException;
 import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallException;
 import com.practice.mall.exception.MallExceptionEnum;
@@ -20,12 +21,18 @@ import com.practice.mall.model.vo.OrderVO;
 import com.practice.mall.service.CartService;
 import com.practice.mall.service.OrderService;
 import com.practice.mall.util.OrderCodeFactory;
+import com.practice.mall.util.QRCodeGenerator;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -47,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     OrderItemMapper orderItemMapper;
+
+    @Value("${file.upload.ip}")
+    String ip;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -244,6 +254,45 @@ public class OrderServiceImpl implements OrderService {
         if (order.getOrderStatus().equals(Constant.OrderStatusEnum.NOT_PAID.getCode())) {
             order.setOrderStatus(Constant.OrderStatusEnum.CANCELED.getCode());
             order.setEndTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+        }
+    }
+
+    @Override
+    public String qrcode(String orderNo) {
+        ServletRequestAttributes attributes =
+                (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String address = ip + ":" + request.getLocalPort();
+        String payUrl = "http://" + address + "/pay?orderNo=" + orderNo;
+
+        try {
+            QRCodeGenerator.generateQRCodeImage(payUrl, 350, 350, Constant.FILE_UPLOAD_DIR + orderNo + ".png");
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String pngAddress = "http://" + address + "/images/" + orderNo + ".png";
+
+        return pngAddress;
+    }
+
+    @Override
+    public void pay(String orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+
+        // 判斷訂單是否存在
+        if (order == null) {
+            throw new MallException(MallExceptionEnum.NO_ORDER);
+        }
+
+        if (order.getOrderStatus() == Constant.OrderStatusEnum.NOT_PAID.getCode()) {
+            order.setOrderStatus(Constant.OrderStatusEnum.PAID.getCode());
+            order.setPayTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
             throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);

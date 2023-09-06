@@ -20,6 +20,7 @@ import com.practice.mall.model.vo.OrderItemVO;
 import com.practice.mall.model.vo.OrderVO;
 import com.practice.mall.service.CartService;
 import com.practice.mall.service.OrderService;
+import com.practice.mall.service.UserService;
 import com.practice.mall.util.OrderCodeFactory;
 import com.practice.mall.util.QRCodeGenerator;
 import org.springframework.beans.BeanUtils;
@@ -42,6 +43,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     CartService cartService;
+
+    @Autowired
+    UserService userService;
 
     @Autowired
     ProductMapper productMapper;
@@ -307,5 +311,46 @@ public class OrderServiceImpl implements OrderService {
         PageInfo pageInfo = new PageInfo(orderList);
         pageInfo.setList(orderVOList);
         return pageInfo;
+    }
+
+    @Override
+    public void deliver(String orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+
+        // 判斷訂單是否存在
+        if (order == null) {
+            throw new MallException(MallExceptionEnum.NO_ORDER);
+        }
+
+        if (order.getOrderStatus() == Constant.OrderStatusEnum.PAID.getCode()) {
+            order.setOrderStatus(Constant.OrderStatusEnum.DELIVERED.getCode());
+            order.setDeliveryTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+        }
+    }
+
+    @Override
+    public void finish(String orderNo) {
+        Order order = orderMapper.selectByOrderNo(orderNo);
+
+        // 判斷訂單是否存在
+        if (order == null) {
+            throw new MallException(MallExceptionEnum.NO_ORDER);
+        }
+
+        // 普通用戶需要驗證訂單是否所屬
+        if (!userService.checkAdminRole(UserFilter.currentUser) && !order.getUserId().equals(UserFilter.currentUser.getId())) {
+            throw new MallException(MallExceptionEnum.NOT_YOUR_ORDER);
+        }
+
+        if (order.getOrderStatus() == Constant.OrderStatusEnum.DELIVERED.getCode()) {
+            order.setOrderStatus(Constant.OrderStatusEnum.FINISHED.getCode());
+            order.setEndTime(new Date());
+            orderMapper.updateByPrimaryKeySelective(order);
+        } else {
+            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+        }
     }
 }

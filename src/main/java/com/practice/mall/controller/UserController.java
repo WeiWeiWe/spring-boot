@@ -34,7 +34,9 @@ public class UserController {
     @PostMapping("/register")
     @ResponseBody
     public ApiRestResponse register(@RequestParam("userName") String userName,
-                                    @RequestParam("password") String password) throws MallException {
+                                    @RequestParam("password") String password,
+                                    @RequestParam("emailAddress") String emailAddress,
+                                    @RequestParam("verificationCode") String verificationCode) throws MallException {
         if (StringUtils.isEmpty(userName)) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
         }
@@ -47,7 +49,27 @@ public class UserController {
             return ApiRestResponse.error(MallExceptionEnum.PASSWORD_TOO_SHORT);
         }
 
-        userService.register(userName, password);
+        if (StringUtils.isEmpty(emailAddress)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_EMAIL_ADDRESS);
+        }
+
+        if (StringUtils.isEmpty(verificationCode)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_VERIFICATION_CODE);
+        }
+
+        // 判斷 email 是否註冊過
+        boolean emailPassed = userService.checkEmailRegistered(emailAddress);
+        if (!emailPassed) {
+            return ApiRestResponse.error(MallExceptionEnum.EMAIL_ALREADY_BEEN_REGISTERED);
+        }
+
+        // 驗證 email 和驗證碼是否匹配
+        Boolean passEmailAndCode = emailService.checkEmailAndCode(emailAddress, verificationCode);
+        if (!passEmailAndCode) {
+            return ApiRestResponse.error(MallExceptionEnum.WRONG_VERIFICATION_CODE);
+        }
+
+        userService.register(userName, password, emailAddress);
 
         return ApiRestResponse.success();
     }

@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void register(String username, String password) throws MallException {
+    public void register(String username, String password, String emailAddress) throws MallException {
         // 查詢用戶名是否存在，不允許重名
         User result = userMapper.selectByName(username);
 
@@ -32,6 +32,7 @@ public class UserServiceImpl implements UserService {
 
         User user = new User();
         user.setUsername(username);
+        user.setEmailAddress(emailAddress);
         try {
             user.setPassword(MD5Utils.getMD5Str(password));
         } catch (NoSuchAlgorithmException e) {

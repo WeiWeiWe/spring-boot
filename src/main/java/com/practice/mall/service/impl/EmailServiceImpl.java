@@ -39,4 +39,18 @@ public class EmailServiceImpl implements EmailService {
         }
         return false;
     }
+
+    @Override
+    public Boolean checkEmailAndCode(String emailAddress, String verificationCode) {
+        RedissonClient client = Redisson.create();
+        RBucket<String> bucket = client.getBucket(emailAddress);
+        boolean exists = bucket.isExists();
+        if (!exists) {
+            String code = bucket.get();
+            if (code.equals(verificationCode)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

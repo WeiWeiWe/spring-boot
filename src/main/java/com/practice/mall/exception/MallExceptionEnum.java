@@ -29,6 +29,9 @@ public enum MallExceptionEnum {
     WRONG_EMAIL(10023, "非正確的email地址"),
     EMAIL_ALREADY_BEEN_REGISTERED(10024, "email已被註冊"),
     EMAIL_ALREADY_BEEN_SEND(10025, "email已發送，若無法收到，請稍候再試"),
+    NEED_EMAIL_ADDRESS(10026, "email不能為空"),
+    NEED_VERIFICATION_CODE(10027, "驗證碼不能為空"),
+    WRONG_VERIFICATION_CODE(10028, "驗證碼錯誤"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

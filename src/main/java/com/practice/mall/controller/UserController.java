@@ -5,7 +5,9 @@ import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallException;
 import com.practice.mall.exception.MallExceptionEnum;
 import com.practice.mall.model.pojo.User;
+import com.practice.mall.service.EmailService;
 import com.practice.mall.service.UserService;
+import com.practice.mall.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
@@ -18,6 +20,9 @@ import javax.servlet.http.HttpSession;
 public class UserController {
     @Autowired
     UserService userService;
+
+    @Autowired
+    EmailService emailService;
 
     /**
      * 註冊用戶
@@ -138,5 +143,33 @@ public class UserController {
             return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
         }
 
+    }
+
+    /**
+     * 發送郵件
+     */
+    @PostMapping("/user/sendEmail")
+    @ResponseBody
+    public ApiRestResponse sendEmail(@RequestParam("emailAddress") String emailAddress) throws MallException {
+        boolean validEmailAddress = EmailUtil.isValidEmailAddress(emailAddress);
+        // 檢查郵件地址是否有效
+        if (validEmailAddress) {
+            // 檢查是否已註冊
+            boolean emailPassed = userService.checkEmailRegistered(emailAddress);
+            if (!emailPassed) {
+                return ApiRestResponse.error(MallExceptionEnum.EMAIL_ALREADY_BEEN_REGISTERED);
+            } else {
+                String verificationCode = EmailUtil.genVerificationCode();
+                Boolean saveEmailToRedis = emailService.saveEmailToRedis(emailAddress, verificationCode);
+                if (saveEmailToRedis) {
+                    emailService.sendSimpleMessage(emailAddress, Constant.EMAIL_SUBJECT, "歡迎註冊，您的驗證碼是" + verificationCode);
+                    return ApiRestResponse.success();
+                } else {
+                    return ApiRestResponse.error(MallExceptionEnum.EMAIL_ALREADY_BEEN_SEND);
+                }
+            }
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.WRONG_EMAIL);
+        }
     }
 }

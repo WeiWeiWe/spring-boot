@@ -13,4 +13,6 @@ public interface UserService {
     void updateInformation(User user) throws MallException;
 
     boolean checkAdminRole(User user);
+
+    boolean checkEmailRegistered(String emailAddress);
 }

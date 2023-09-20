@@ -26,6 +26,9 @@ public enum MallExceptionEnum {
     NO_ORDER(10020, "訂單不存在"),
     NOT_YOUR_ORDER(10021, "不是此用戶的訂單"),
     WRONG_ORDER_STATUS(10022, "訂單狀態不符"),
+    WRONG_EMAIL(10023, "非正確的email地址"),
+    EMAIL_ALREADY_BEEN_REGISTERED(10024, "email已被註冊"),
+    EMAIL_ALREADY_BEEN_SEND(10025, "email已發送，若無法收到，請稍候再試"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

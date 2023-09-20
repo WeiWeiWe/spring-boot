@@ -15,6 +15,8 @@ import java.util.Set;
 public class Constant {
     public static final String MALL_USER = "mall_user";
     public static final String SALT = "8312fjbvdfdq.msa,[12";
+    public static final String EMAIL_SUBJECT = "您的驗證碼";
+    public static final String EMAIL_FROM = "";
 
     public static String FILE_UPLOAD_DIR;
 

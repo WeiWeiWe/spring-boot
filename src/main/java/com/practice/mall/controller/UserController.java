@@ -1,5 +1,7 @@
 package com.practice.mall.controller;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallException;
@@ -11,10 +13,12 @@ import com.practice.mall.util.EmailUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 
 @Controller
 public class UserController {
@@ -193,5 +197,30 @@ public class UserController {
         } else {
             return ApiRestResponse.error(MallExceptionEnum.WRONG_EMAIL);
         }
+    }
+
+    @GetMapping("/loginWithJwt")
+    @ResponseBody
+    public ApiRestResponse loginWithJwt(@RequestParam("userName") String userName,
+                                        @RequestParam("password") String password) {
+        if (StringUtils.isEmpty(userName)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
+        }
+
+        if (StringUtils.isEmpty(password)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
+        }
+
+        User user = userService.login(userName, password);
+        user.setPassword(null);
+        Algorithm algorithm = Algorithm.HMAC256(Constant.JWT_KEY);
+        String token = JWT.create()
+                .withClaim(Constant.USER_NAME, user.getUsername())
+                .withClaim(Constant.USER_ID, user.getId())
+                .withClaim(Constant.USER_ROLE, user.getRole())
+                .withExpiresAt(new Date(System.currentTimeMillis() + Constant.EXPIRE_TIME))
+                .sign(algorithm);
+
+        return ApiRestResponse.success(token);
     }
 }

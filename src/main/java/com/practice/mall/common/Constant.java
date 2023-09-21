@@ -17,7 +17,11 @@ public class Constant {
     public static final String SALT = "8312fjbvdfdq.msa,[12";
     public static final String EMAIL_SUBJECT = "您的驗證碼";
     public static final String EMAIL_FROM = "";
-
+    public static final String JWT_KEY = "JWT_mall";
+    public static final String USER_ID = "user_id";
+    public static final String USER_NAME = "user_name";
+    public static final String USER_ROLE = "user_role";
+    public static final Long EXPIRE_TIME = 60 * 1000 * 60 * 24 * 1L;
     public static String FILE_UPLOAD_DIR;
 
     @Value("${file.upload.dir}")

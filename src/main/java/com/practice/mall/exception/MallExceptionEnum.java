@@ -32,6 +32,8 @@ public enum MallExceptionEnum {
     NEED_EMAIL_ADDRESS(10026, "email不能為空"),
     NEED_VERIFICATION_CODE(10027, "驗證碼不能為空"),
     WRONG_VERIFICATION_CODE(10028, "驗證碼錯誤"),
+    TOKEN_EXPIRED(10029, "token過期"),
+    TOKEN_WRONG(10030, "token解析失敗"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

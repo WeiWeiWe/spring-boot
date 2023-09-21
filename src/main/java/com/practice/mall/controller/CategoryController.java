@@ -2,8 +2,8 @@ package com.practice.mall.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.practice.mall.common.ApiRestResponse;
-import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallExceptionEnum;
+import com.practice.mall.filter.UserFilter;
 import com.practice.mall.model.pojo.Category;
 import com.practice.mall.model.pojo.User;
 import com.practice.mall.model.request.AddCategoryReq;
@@ -35,8 +35,8 @@ public class CategoryController {
     @ApiOperation("後台添加商品分類目錄")
     @PostMapping("admin/category/add")
     @ResponseBody
-    public ApiRestResponse addCategory(HttpSession session, @Valid @RequestBody AddCategoryReq addCategoryReq) {
-        User currentUser = (User)session.getAttribute(Constant.MALL_USER);
+    public ApiRestResponse addCategory(@Valid @RequestBody AddCategoryReq addCategoryReq) {
+        User currentUser = UserFilter.currentUser;
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }
@@ -54,9 +54,8 @@ public class CategoryController {
     @ApiOperation("後台更新商品分類目錄")
     @PostMapping("admin/category/update")
     @ResponseBody
-    public ApiRestResponse updateCategory(HttpSession session,
-                                          @Valid @RequestBody UpdateCategoryReq updateCategoryReq) {
-        User currentUser = (User)session.getAttribute(Constant.MALL_USER);
+    public ApiRestResponse updateCategory(@Valid @RequestBody UpdateCategoryReq updateCategoryReq) {
+        User currentUser = UserFilter.currentUser;
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
         }

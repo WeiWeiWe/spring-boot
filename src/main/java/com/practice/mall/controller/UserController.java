@@ -6,6 +6,7 @@ import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.common.Constant;
 import com.practice.mall.exception.MallException;
 import com.practice.mall.exception.MallExceptionEnum;
+import com.practice.mall.filter.UserFilter;
 import com.practice.mall.model.pojo.User;
 import com.practice.mall.service.EmailService;
 import com.practice.mall.service.UserService;
@@ -107,15 +108,14 @@ public class UserController {
 
     /**
      * 更新用戶個性簽名
-     * @param session
      * @param signature
      * @return
      * @throws MallException
      */
     @PostMapping("/user/update")
     @ResponseBody
-    public ApiRestResponse updateUserInfo(HttpSession session, @RequestParam String signature) throws MallException {
-        User currentUser = (User)session.getAttribute(Constant.MALL_USER);
+    public ApiRestResponse updateUserInfo(@RequestParam String signature) throws MallException {
+        User currentUser = UserFilter.currentUser;
 
         if (currentUser == null) {
             return ApiRestResponse.error(MallExceptionEnum.NEED_LOGIN);
@@ -222,5 +222,33 @@ public class UserController {
                 .sign(algorithm);
 
         return ApiRestResponse.success(token);
+    }
+
+    @GetMapping("/adminLoginWithJwt")
+    @ResponseBody
+    public ApiRestResponse adminLoginWithJwt(@RequestParam("userName") String userName,
+                                      @RequestParam("password") String password) throws MallException {
+        if (StringUtils.isEmpty(userName)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_USER_NAME);
+        }
+
+        if (StringUtils.isEmpty(password)) {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_PASSWORD);
+        }
+
+        User user = userService.login(userName, password);
+        if (userService.checkAdminRole(user)) {
+            user.setPassword(null);
+            Algorithm algorithm = Algorithm.HMAC256(Constant.JWT_KEY);
+            String token = JWT.create()
+                    .withClaim(Constant.USER_NAME, user.getUsername())
+                    .withClaim(Constant.USER_ID, user.getId())
+                    .withClaim(Constant.USER_ROLE, user.getRole())
+                    .withExpiresAt(new Date(System.currentTimeMillis() + Constant.EXPIRE_TIME))
+                    .sign(algorithm);
+            return ApiRestResponse.success(token);
+        } else {
+            return ApiRestResponse.error(MallExceptionEnum.NEED_ADMIN);
+        }
     }
 }

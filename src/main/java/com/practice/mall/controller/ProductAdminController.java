@@ -3,6 +3,7 @@ package com.practice.mall.controller;
 import com.github.pagehelper.PageInfo;
 import com.practice.mall.common.ApiRestResponse;
 import com.practice.mall.common.Constant;
+import com.practice.mall.common.ValidList;
 import com.practice.mall.exception.MallException;
 import com.practice.mall.exception.MallExceptionEnum;
 import com.practice.mall.model.pojo.Product;
@@ -27,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -158,5 +160,17 @@ public class ProductAdminController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @ApiOperation("後台批量更新商品，ValidList驗證")
+    @PostMapping("/admin/product/batchUpdate")
+    public ApiRestResponse batchUpdateProduct(ValidList<UpdateProductReq> updateProductReqList) {
+        for (int i = 0; i < updateProductReqList.size(); i++) {
+            UpdateProductReq updateProductReq = updateProductReqList.get(i);
+            Product product = new Product();
+            BeanUtils.copyProperties(updateProductReq, product);
+            productService.update(product);
+        }
+        return ApiRestResponse.success();
     }
 }

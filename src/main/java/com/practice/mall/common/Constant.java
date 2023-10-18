@@ -23,6 +23,9 @@ public class Constant {
     public static final String USER_NAME = "user_name";
     public static final String USER_ROLE = "user_role";
     public static final Long EXPIRE_TIME = 60 * 1000 * 60 * 24 * 1L;
+    public static final Integer IMAGE_SIZE = 400;
+    public static final Float IMAGE_OPACITY = 0.5f;
+    public static final String WATER_MARK_JPG = "";
     public static String FILE_UPLOAD_DIR;
 
     @Value("${file.upload.dir}")

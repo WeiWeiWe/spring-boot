@@ -15,6 +15,7 @@ import net.coobird.thumbnailator.Thumbnails;
 import net.coobird.thumbnailator.geometry.Positions;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,6 +36,8 @@ import java.util.UUID;
 public class ProductAdminController {
     @Autowired
     ProductService productService;
+    @Value("${file.upload.uri}")
+    String uri;
 
     @PostMapping("/admin/product/add")
     public ApiRestResponse addProduct(@Valid @RequestBody AddProductReq addProductReq) {
@@ -56,11 +59,8 @@ public class ProductAdminController {
         File destFile = new File(Constant.FILE_UPLOAD_DIR + newFileName);
         createFile(file, fileDirectory, destFile);
 
-        try {
-            return ApiRestResponse.success(getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFileName);
-        } catch (URISyntaxException e) {
-            return ApiRestResponse.error(MallExceptionEnum.UPLOAD_FAILED);
-        }
+        String address = uri;
+        return ApiRestResponse.success("http://" + address + "/images/" + newFileName);
     }
 
     private URI getHost(URI uri) {
@@ -142,11 +142,8 @@ public class ProductAdminController {
                 ImageIO.read(new File(Constant.FILE_UPLOAD_DIR + Constant.WATER_MARK_JPG)), Constant.IMAGE_OPACITY)
                 .toFile(new File(Constant.FILE_UPLOAD_DIR + newFileName));
 
-        try {
-            return ApiRestResponse.success(getHost(new URI(httpServletRequest.getRequestURL() + "")) + "/images/" + newFileName);
-        } catch (URISyntaxException e) {
-            return ApiRestResponse.error(MallExceptionEnum.UPLOAD_FAILED);
-        }
+        String address = uri;
+        return ApiRestResponse.success("http://" + address + "/images/" + newFileName);
     }
 
     private static void createFile(MultipartFile file, File fileDirectory, File destFile) {

@@ -34,6 +34,10 @@ public enum MallExceptionEnum {
     WRONG_VERIFICATION_CODE(10028, "驗證碼錯誤"),
     TOKEN_EXPIRED(10029, "token過期"),
     TOKEN_WRONG(10030, "token解析失敗"),
+    CANCEL_WRONG_ORDER_STATUS(10031, "訂單狀態有誤，付款後暫不支持取消訂單"),
+    PAY_WRONG_ORDER_STATUS(10032, "訂單狀態有誤，僅能在未付款時付款"),
+    DELIVER_WRONG_ORDER_STATUS(10033, "訂單狀態有誤，僅能在付款後發貨"),
+    FINISH_WRONG_ORDER_STATUS(10034, "訂單狀態有誤，僅能在發貨後完單"),
     SYSTEM_ERROR(20000, "系統異常");
 
     Integer code;

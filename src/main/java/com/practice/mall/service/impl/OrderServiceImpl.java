@@ -59,8 +59,8 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     OrderItemMapper orderItemMapper;
 
-    @Value("${file.upload.ip}")
-    String ip;
+    @Value("${file.upload.uri}")
+    String uri;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -260,7 +260,7 @@ public class OrderServiceImpl implements OrderService {
             order.setEndTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new MallException(MallExceptionEnum.CANCEL_WRONG_ORDER_STATUS);
         }
     }
 
@@ -269,7 +269,7 @@ public class OrderServiceImpl implements OrderService {
         ServletRequestAttributes attributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        String address = ip + ":" + request.getLocalPort();
+        String address = uri;
         String payUrl = "http://" + address + "/pay?orderNo=" + orderNo;
 
         try {
@@ -299,7 +299,7 @@ public class OrderServiceImpl implements OrderService {
             order.setPayTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new MallException(MallExceptionEnum.PAY_WRONG_ORDER_STATUS);
         }
     }
 
@@ -327,7 +327,7 @@ public class OrderServiceImpl implements OrderService {
             order.setDeliveryTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new MallException(MallExceptionEnum.DELIVER_WRONG_ORDER_STATUS);
         }
     }
 
@@ -350,7 +350,7 @@ public class OrderServiceImpl implements OrderService {
             order.setEndTime(new Date());
             orderMapper.updateByPrimaryKeySelective(order);
         } else {
-            throw new MallException(MallExceptionEnum.WRONG_ORDER_STATUS);
+            throw new MallException(MallExceptionEnum.FINISH_WRONG_ORDER_STATUS);
         }
     }
 }

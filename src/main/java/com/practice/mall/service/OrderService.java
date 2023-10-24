@@ -2,7 +2,11 @@ package com.practice.mall.service;
 
 import com.github.pagehelper.PageInfo;
 import com.practice.mall.model.request.CreateOrderReq;
+import com.practice.mall.model.vo.OrderStatisticsVO;
 import com.practice.mall.model.vo.OrderVO;
+
+import java.util.Date;
+import java.util.List;
 
 public interface OrderService {
 
@@ -23,4 +27,6 @@ public interface OrderService {
     void deliver(String orderNo);
 
     void finish(String orderNo);
+
+    List<OrderStatisticsVO> statistics(Date startDate, Date endDate);
 }
